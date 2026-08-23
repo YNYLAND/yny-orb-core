@@ -32,6 +32,47 @@ async function createEmbedding(input: string) {
   return data.data?.[0]?.embedding || null;
 }
 
+async function backfillMissingEmbeddings(limit = 50) {
+  const { data: blocks, error } = await supabase
+    .from("session_summary_blocks")
+    .select("id, title, tags, summary")
+    .is("embedding", null)
+    .order("created_at", { ascending: true })
+    .limit(limit);
+
+  if (error || !blocks?.length) {
+    return { found: blocks?.length || 0, embedded: 0, failed: error ? 1 : 0 };
+  }
+
+  let embedded = 0;
+  let failed = 0;
+
+  for (const block of blocks) {
+    const tags = Array.isArray(block.tags) ? block.tags : [];
+    const input = [
+      block.title ? `Title: ${block.title}` : "",
+      tags.length ? `Tags: ${tags.join(", ")}` : "",
+      `Summary: ${block.summary}`,
+    ].filter(Boolean).join("\n");
+
+    const embedding = await createEmbedding(input);
+    if (!embedding) {
+      failed++;
+      continue;
+    }
+
+    const { error: updateError } = await supabase
+      .from("session_summary_blocks")
+      .update({ embedding })
+      .eq("id", block.id);
+
+    if (updateError) failed++;
+    else embedded++;
+  }
+
+  return { found: blocks.length, embedded, failed };
+}
+
 Deno.serve(async (req) => {
   if (req.method !== "POST") return new Response("POST only", { status: 405 });
   if (!(await authorize(req))) return new Response("unauthorized", { status: 401 });
@@ -39,6 +80,10 @@ Deno.serve(async (req) => {
   try {
     let body: any = {};
     try { body = await req.json(); } catch (_) {}
+
+    const embeddingBackfill = await backfillMissingEmbeddings(
+      Math.min(100, Math.max(0, Number(body.embedding_backfill_limit ?? 50))),
+    );
 
     const targetSessionId = body.session_id || null;
     const minMessages = Math.max(2, Number(body.min_messages || 8));
@@ -144,7 +189,7 @@ Deno.serve(async (req) => {
       results.push({ session_id: sessionId, ok: true, semantic_blocks: inserted });
     }
 
-    return new Response(JSON.stringify({ ok: true, processed_sessions: results.length, results }), { headers: { "Content-Type": "application/json" } });
+    return new Response(JSON.stringify({ ok: true, embedding_backfill: embeddingBackfill, processed_sessions: results.length, results }), { headers: { "Content-Type": "application/json" } });
   } catch (err) {
     console.error("memory-summary-builder error:", err);
     return new Response(JSON.stringify({ ok: false, error: String(err) }), { status: 500, headers: { "Content-Type": "application/json" } });
