@@ -1,0 +1,195 @@
+version: 0.1.0
+principles:
+  - "A capability is canonical and singular; modes change its execution profile, not its identity."
+  - "CORP inherits activated YNY_CHAT capabilities and may execute them with more models, agents, variants, previews, critics and verifiers."
+  - "SYSTEM uses capabilities through the Neo World frame: resolve what exists, what the Actor can take, what the Actor can contribute, and what system transaction is available."
+
+profiles:
+  - capability: WEB
+    mode: SYSTEM
+    execution_profile: neo_world_reference
+    behavior:
+      primary_source: neo_world_internal
+      external_web: false_by_default
+      use_case: "Show manifested Neo World knowledge and system pathways, not a general web answer."
+
+  - capability: WEB
+    mode: YNY_CHAT
+    execution_profile: personal_research
+    behavior:
+      external_web: actor_activation_required
+      agents: single_flagship_with_helpers
+      source_verification: standard
+      dedupe: standard
+
+  - capability: WEB
+    mode: CORP
+    execution_profile: research_swarm
+    behavior:
+      external_web: actor_activation_inherited_from_yny_chat
+      multi_agent: true
+      parallel_research: true
+      source_verifier: true
+      dedupe: true
+      critic: true
+      synthesis: flagship
+
+  - capability: IMAGE
+    mode: SYSTEM
+    execution_profile: neo_world_media
+    behavior:
+      show_existing_artifacts: true
+      generation: only_when_creator_or_explicit_system_workflow_allows
+
+  - capability: IMAGE
+    mode: YNY_CHAT
+    execution_profile: personal_creation
+    behavior:
+      preferred_provider: true
+      preview_variants: limited
+      quality_choice: true
+      multi_provider: false
+
+  - capability: IMAGE
+    mode: CORP
+    execution_profile: art_direction
+    behavior:
+      multi_provider: true
+      parallel_variants: true
+      previews: many
+      critic: true
+      comparator: true
+      final_refinement: true
+
+  - capability: VIDEO
+    mode: SYSTEM
+    execution_profile: neo_world_video
+    behavior:
+      show_existing_video: true
+      link_to_entities: true
+      creator_path: true
+      generation: only_when_explicit_system_workflow_allows
+
+  - capability: VIDEO
+    mode: YNY_CHAT
+    execution_profile: personal_video
+    behavior:
+      preferred_generator: true
+      cheap_template_pipeline: true
+      code_templates: true
+      source_media_animation: true
+      preview_first: true
+      variants: limited
+      multi_provider: false
+
+  - capability: VIDEO
+    mode: CORP
+    execution_profile: video_production
+    behavior:
+      activation_inherited_from_yny_chat: true
+      multi_provider: true
+      parallel_generators: true
+      previews: many
+      creative_directions: many
+      critic: true
+      comparator: true
+      selected_variant_refinement: true
+      downstream_smm_pipeline: when_active
+
+  - capability: SITE_PAGE
+    mode: SYSTEM
+    execution_profile: neo_world_page
+    behavior:
+      show_existing_pages: true
+      creator_path: true
+      entity_binding: true
+
+  - capability: SITE_PAGE
+    mode: YNY_CHAT
+    execution_profile: personal_site
+    behavior:
+      single_pipeline: true
+      flagship_direction: true
+      revisions: iterative
+
+  - capability: SITE_PAGE
+    mode: CORP
+    execution_profile: site_team
+    behavior:
+      research_agent: true
+      copy_agent: true
+      design_agent: true
+      dev_agent: true
+      reviewer: true
+      variants: multiple_when_useful
+
+  - capability: TEXT_PACKAGING
+    mode: SYSTEM
+    execution_profile: neo_world_content_packaging
+    behavior:
+      package_existing_neo_world_material: true
+      creator_path: true
+      tokenizable_content_blocks: true
+
+  - capability: TEXT_PACKAGING
+    mode: YNY_CHAT
+    execution_profile: personal_authoring
+    behavior:
+      flagship_authoring: true
+      iterative_structure: true
+      article_book_course_modal: true
+
+  - capability: TEXT_PACKAGING
+    mode: CORP
+    execution_profile: editorial_team
+    behavior:
+      researcher: true
+      author: true
+      editor: true
+      critic: true
+      fact_checker: when_sources_available
+      formatter: true
+      publication_pipeline: when_active
+
+  - capability: GEO
+    mode: SYSTEM
+    execution_profile: neo_world_geo
+    behavior:
+      entity_geo_first: true
+      actor_location_requires_permission: true
+      show_system_places: true
+
+  - capability: GEO
+    mode: YNY_CHAT
+    execution_profile: personal_geo
+    behavior:
+      actor_location_requires_permission: true
+      maps: true
+      routes: true
+      nearby: true
+
+  - capability: GEO
+    mode: CORP
+    execution_profile: geo_research
+    behavior:
+      activation_inherited_from_yny_chat: true
+      parallel_place_research: true
+      route_variants: true
+      cross_check: true
+
+  - capability: MULTI_AGENT_ORCHESTRATION
+    mode: SYSTEM
+    execution_profile: unavailable
+
+  - capability: MULTI_AGENT_ORCHESTRATION
+    mode: YNY_CHAT
+    execution_profile: unavailable
+
+  - capability: MULTI_AGENT_ORCHESTRATION
+    mode: CORP
+    execution_profile: native
+    behavior:
+      specialist_pool: true
+      parallel_execution: true
+      shared_semantic_session: true
+      flagship_final_authority: true
