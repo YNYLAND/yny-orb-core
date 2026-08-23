@@ -1,0 +1,269 @@
+version: 0.1.0
+status_values: [concept, planned, implemented, available, deprecated]
+actor_state_values: [irrelevant, potential, locked, activated, permission_required, active]
+
+capabilities:
+  - key: ACTOR_CONTEXT
+    group: CORE
+    status: planned
+    purpose: "Maintain a current model of who the Actor is in relation to the active goal."
+    can_close: [orientation, personalization]
+  - key: DISCOURSE_CONTEXT
+    group: CORE
+    status: planned
+    purpose: "Separate literal discourse from inferred situational context and response posture."
+    can_close: [communication_alignment]
+  - key: SESSION_ENGINE
+    group: CORE
+    status: planned
+    purpose: "Maintain multiple parallel semantic sessions/goals inside one conversation stream."
+    can_close: [continuity, project_progress]
+  - key: GESTALT_ENGINE
+    group: CORE
+    status: planned
+    purpose: "Track goals, checks, open loops, results and closure conditions."
+    can_close: [goal_completion]
+  - key: GUIDE_CORE
+    group: CORE
+    status: planned
+    purpose: "Assemble the relevant scene/Guide Packet before each flagship response."
+    can_close: [context_retrieval, scenario_construction]
+  - key: MEMORY
+    group: CORE
+    status: implemented
+    purpose: "Read and write actor memory layers."
+    can_close: [continuity]
+  - key: SUMMARY_ANALYSIS
+    group: CORE
+    status: implemented
+    purpose: "Use periodic summaries of raw discourse and later detect repeated patterns and latent vectors."
+    can_close: [long_term_pattern_detection]
+  - key: ENTITY_GRAPH
+    group: CORE
+    status: planned
+    purpose: "Resolve Neo World entities, passports and graph relations."
+    can_close: [entity_resolution, neo_world_navigation]
+  - key: INTERNAL_SEARCH
+    group: CORE
+    status: implemented
+    purpose: "Retrieve relevant Neo World/profile knowledge from internal storage."
+    can_close: [neo_world_navigation, context_retrieval]
+  - key: DYNAMIC_UI
+    group: CORE
+    status: planned
+    purpose: "Render answers as a composition of text, entities, artifacts, checks, actions and potential actions."
+    can_close: [presentation, interaction]
+  - key: NEO_NAVIGATION
+    group: CORE
+    status: implemented
+    purpose: "Guide the Actor through Neo World objects, modes and operations."
+    can_close: [neo_world_navigation]
+
+  - key: WEB
+    group: KNOWLEDGE
+    status: implemented
+    implementation_note: pilot
+    purpose: "Search the live web and read public web sources for the current task."
+    produces: [fresh_facts, research, comparisons, source_sets]
+    can_close: [research, verification, current_information]
+  - key: INFOTEKA
+    group: KNOWLEDGE
+    status: planned
+    purpose: "Bring external sources into structured profile/Neo World knowledge and reusable content blocks."
+    produces: [structured_knowledge, content_blocks, parsers]
+    can_close: [knowledge_ingestion, reusable_knowledge]
+  - key: WIKI
+    group: KNOWLEDGE
+    status: implemented
+    purpose: "Show encyclopedic/entity knowledge already manifested in Neo World."
+    produces: [entity_knowledge_view]
+    can_close: [entity_understanding]
+  - key: GUIDE
+    group: KNOWLEDGE
+    status: implemented
+    purpose: "Show paths, possibilities and development branches for a Neo World entity or process."
+    produces: [roadmap, possibility_map]
+    can_close: [orientation, next_steps]
+  - key: TREE
+    group: KNOWLEDGE
+    status: planned
+    purpose: "Represent hierarchical/branching structures of entities, projects or possibilities."
+    produces: [tree_view]
+    can_close: [structure_visibility]
+  - key: WAY
+    group: KNOWLEDGE
+    status: planned
+    purpose: "Represent a path from current state to target state."
+    produces: [path, roadmap]
+    can_close: [goal_navigation]
+
+  - key: IMAGE
+    group: CREATE
+    status: planned
+    purpose: "Understand, generate and later edit images."
+    produces: [image, image_variants, visual_reference]
+    can_close: [visualization, packaging, presentation]
+  - key: VISION
+    group: CREATE
+    status: planned
+    purpose: "Create semantic/archetypal visual interpretation distinct from technical IMAGE tooling."
+    produces: [vision, symbolic_visual]
+    can_close: [concept_visualization]
+  - key: VIDEO
+    group: CREATE
+    status: planned
+    purpose: "Create video from templates, source media or generative video models depending on mode profile."
+    produces: [teaser, promo, explainer, social_content, visual_story]
+    can_close: [visualization, packaging, promotion, distribution, presentation]
+  - key: TEXT_PACKAGING
+    group: CREATE
+    status: planned
+    purpose: "Transform accumulated material into article, book, course, modal, catalog or other structured publication."
+    produces: [article, book, course, modal, catalog]
+    can_close: [packaging, publication_readiness, knowledge_product]
+  - key: SITE_PAGE
+    group: CREATE
+    status: implemented
+    purpose: "Create and maintain pages/sites for public or system presentation."
+    produces: [page, website, landing, catalog]
+    can_close: [public_presence, sharing, packaging]
+  - key: PUBLISH
+    group: CREATE
+    status: planned
+    purpose: "Publish prepared content to internal or external destinations when connectors/workflows exist."
+    produces: [publication]
+    can_close: [publication, distribution]
+  - key: CONTENT_MODULE
+    group: CREATE
+    status: planned
+    purpose: "Seal structured knowledge into reusable free or paid information modules."
+    produces: [content_module]
+    can_close: [reuse, monetization, knowledge_distribution]
+  - key: NFT_PACKAGING
+    group: CREATE
+    status: planned
+    purpose: "Package suitable artifacts, rights or unpackings as NFT objects."
+    produces: [nft_package]
+    can_close: [ownership_packaging, monetization]
+
+  - key: GEO
+    group: ACTION
+    status: planned
+    purpose: "Work with actor-authorized location, places, maps and routes."
+    produces: [location, place_set, map, route]
+    can_close: [location_context, navigation, nearby_discovery]
+  - key: CONNECTORS
+    group: ACTION
+    status: planned
+    purpose: "Connect approved external services and make their capabilities addressable by Orb."
+    produces: [external_context, external_action_channel]
+    can_close: [external_integration]
+  - key: ASSIS
+    group: ACTION
+    status: planned
+    purpose: "Execute actor-authorized actions in connected systems."
+    produces: [external_action_result]
+    can_close: [booking, sending, calling, publishing, execution]
+  - key: SMM_AUTOPILOT
+    group: ACTION
+    status: concept
+    purpose: "Schedule and distribute prepared content across connected social channels."
+    produces: [scheduled_distribution, social_presence]
+    can_close: [distribution, regular_publication, audience_presence]
+  - key: MESSAGING
+    group: ACTION
+    status: concept
+    purpose: "Send actor-authorized messages through connected channels."
+    produces: [message_sent]
+    can_close: [communication, follow_up]
+  - key: BOOKING
+    group: ACTION
+    status: concept
+    purpose: "Create actor-authorized reservations/appointments through connected services."
+    produces: [booking]
+    can_close: [reservation, appointment]
+
+  - key: PROFILE
+    group: NEO_SYSTEM
+    status: implemented
+    purpose: "Read and manage the Actor's Neo World profile state."
+    can_close: [identity, profile_state]
+  - key: ENTITY_CREATE
+    group: NEO_SYSTEM
+    status: planned
+    purpose: "Manifest a new entity in Neo World."
+    produces: [entity]
+    can_close: [entity_manifestation]
+  - key: ENTITY_PASSPORT
+    group: NEO_SYSTEM
+    status: planned
+    purpose: "Create and maintain the canonical passport of a Neo World entity."
+    produces: [entity_passport]
+    can_close: [entity_manifestation, entity_identity]
+  - key: CREATOR
+    group: NEO_SYSTEM
+    status: implemented
+    purpose: "Mode/workspace for contributing new content and entities to Neo World."
+    can_close: [creation, contribution]
+  - key: PAYMENTS
+    group: NEO_SYSTEM
+    status: implemented
+    purpose: "Neo World balance, charges and payment operations."
+    can_close: [payment]
+  - key: OFFER_ACCEPT_TRANSACTION
+    group: NEO_SYSTEM
+    status: planned
+    purpose: "Canonical offer -> accept -> transaction protocol."
+    can_close: [activation, purchase, state_change]
+  - key: TOKEN
+    group: NEO_SYSTEM
+    status: implemented
+    purpose: "Represent and operate token-related Neo World entities/workflows."
+    can_close: [tokenization]
+  - key: SMART_CONTRACT
+    group: NEO_SYSTEM
+    status: implemented
+    purpose: "Create/operate smart-contract workflows where enabled."
+    can_close: [contract_execution]
+  - key: WALLET
+    group: NEO_SYSTEM
+    status: implemented
+    purpose: "Work with supported wallet-related state and workflows."
+    can_close: [wallet_connection, asset_visibility]
+  - key: LIQUIDITY
+    group: NEO_SYSTEM
+    status: planned
+    purpose: "Work with supported liquidity/pool workflows."
+    can_close: [liquidity]
+  - key: NFT
+    group: NEO_SYSTEM
+    status: implemented
+    purpose: "Represent and operate supported NFT entities/workflows."
+    can_close: [ownership_packaging, access]
+  - key: DAO
+    group: NEO_SYSTEM
+    status: implemented
+    purpose: "Represent DAO access/governance states and gated system capabilities."
+    can_close: [governance, access]
+  - key: AMBASSADOR
+    group: NEO_SYSTEM
+    status: implemented
+    purpose: "Referral/ambassador system and associated sites/content."
+    can_close: [referral, distribution]
+  - key: JURISDICTION
+    group: NEO_SYSTEM
+    status: planned
+    purpose: "Represent jurisdictional activation and related institutional workflows."
+    can_close: [jurisdiction_activation]
+  - key: MARKET_CATALOG
+    group: NEO_SYSTEM
+    status: planned
+    purpose: "Discover and transact on Neo World catalogs, products, modules and information packages."
+    can_close: [discovery, transaction]
+
+  - key: MULTI_AGENT_ORCHESTRATION
+    group: CORP
+    status: planned
+    purpose: "Coordinate multiple helper models/agents around one semantic session while the flagship Orb remains the single conversational identity."
+    produces: [parallel_work, critiques, comparisons, synthesized_result]
+    can_close: [deep_research, production, complex_execution]
