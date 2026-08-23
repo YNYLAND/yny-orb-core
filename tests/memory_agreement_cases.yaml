@@ -1,0 +1,33 @@
+version: 1
+cases:
+  - key: standing_negative_instruction
+    user_input: "Не делай так больше."
+    expected:
+      memory_event: true
+      immediate_profile_memory: true
+      durable_candidate: true
+      behavior: "Future responses respect the instruction until renegotiated."
+
+  - key: offer_card_agreement
+    user_input: "Карточки модулей показывай только когда я явно заинтересовался."
+    expected:
+      memory_event: true
+      immediate_profile_memory: true
+      durable_candidate: true
+      behavior: "SYSTEM may describe useful potential, but does not show activation cards before explicit interest."
+
+  - key: shared_phrase_protocol
+    user_input: "Когда я говорю «Погнали», запускай наш согласованный сценарий."
+    expected:
+      memory_event: true
+      immediate_profile_memory: true
+      durable_candidate: true
+      behavior: "The phrase becomes a negotiated shorthand after the referenced scenario is unambiguous."
+
+  - key: renegotiation
+    user_input: "Теперь договоримся иначе: карточку можно показывать сразу, если я прямо спрашиваю цену."
+    expected:
+      memory_event: true
+      immediate_profile_memory: true
+      durable_candidate: true
+      behavior: "The newer explicit agreement supersedes the conflicting older rule in the applicable context."
