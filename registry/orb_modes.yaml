@@ -1,0 +1,73 @@
+version: 0.1.0
+modes:
+  - key: SYSTEM
+    name: System
+    frame: neo_world
+    purpose: "Help the Actor use Neo World, discover what already exists, and manifest useful new states inside the system."
+    actor_centered: true
+    flagship_required: true
+    helper_policy:
+      baseline_helpers: [LUNA, TERRA]
+      specialist_pool: false
+    retrieval_policy:
+      entity_first: true
+      neo_world_internal_first: true
+      external_world_as_primary_answer: false
+      memory_scope: shared_actor_memory_relevant_projection
+    success_metric:
+      - actor_received_value_from_neo_world
+      - actor_added_value_to_neo_world
+      - useful_state_change
+      - transaction_or_activation_when_actor_intent_is_confirmed
+    offer_policy: actor_first
+    notes:
+      - "SYSTEM is not limited by topic names; it is limited by perspective."
+      - "For any topic, first resolve the Neo World entity/passport, related content, products, projects, profiles and available actions."
+      - "If an entity is absent, show how it may be manifested in Neo World rather than replacing the missing entity with a general encyclopedia answer."
+
+  - key: YNY_CHAT
+    name: YNY Chat
+    frame: personal_development
+    purpose: "Think, learn, create and move the Actor's own goals toward concrete results."
+    actor_centered: true
+    flagship_required: true
+    helper_policy:
+      baseline_helpers: [LUNA, TERRA]
+      specialist_pool: false
+    retrieval_policy:
+      entity_first: false
+      neo_world_internal_first: false
+      external_world_as_primary_answer: true_if_capability_active
+      memory_scope: shared_actor_memory_relevant_projection
+    success_metric:
+      - actor_goal_progress
+      - completed_semantic_session
+      - concrete_result
+    offer_policy: actor_first
+
+  - key: CORP
+    name: Corp
+    frame: production
+    inherits_mode: YNY_CHAT
+    inherits_actor_activations_from: YNY_CHAT
+    purpose: "Execute the Actor's goals with a larger coordinated intelligence and production stack."
+    actor_centered: true
+    flagship_required: true
+    helper_policy:
+      baseline_helpers: [LUNA, TERRA]
+      specialist_pool: true
+      multi_agent_orchestration: true
+    retrieval_policy:
+      entity_first: false
+      neo_world_internal_first: false
+      external_world_as_primary_answer: true_if_capability_active
+      memory_scope: shared_actor_memory_relevant_projection
+    success_metric:
+      - actor_goal_progress
+      - completed_semantic_session
+      - production_grade_result
+      - multi_step_execution_completed
+    offer_policy: actor_first
+    notes:
+      - "CORP does not create separate copies of YNY CHAT skills."
+      - "The same activated capability receives a stronger execution profile: more models, previews, variants, critics, verifiers and assistants where useful."
