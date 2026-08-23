@@ -16,9 +16,10 @@ select cron.alter_job(
       ),
       body := jsonb_build_object(
         'min_messages',8,
-        'max_messages_to_analyze',30
+        'max_messages_to_analyze',30,
+        'embedding_backfill_limit',50
       ),
-      timeout_milliseconds := 10000
+      timeout_milliseconds := 30000
     );
   $cmd$
 );
@@ -37,7 +38,7 @@ select cron.alter_job(
         )
       ),
       body := jsonb_build_object('limit',50),
-      timeout_milliseconds := 10000
+      timeout_milliseconds := 30000
     );
   $cmd$
 );
