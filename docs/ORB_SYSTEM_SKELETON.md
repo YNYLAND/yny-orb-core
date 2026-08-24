@@ -1,116 +1,249 @@
-# ORB SYSTEM SKELETON
+# ORB SYSTEMS SYSTEM — SKELETON
 
 ## Purpose
 
-This document is the high-level anatomy of Orb. It separates cognitive organs, memory, language, interface/runtime, capabilities, entities and state-change mechanics so new development can be attached to the correct layer.
+This document is the master anatomy of Orb: the **system of systems** that shows which major organs exist, what each organ owns, and how state flows through the organism.
+
+The master sheet is **Sheet 0** of the future printable Orb Systems Atlas. Every numbered system below should later have its own printable sheet with purpose, inputs, outputs, internal modules, dependencies, live status, current implementation and roadmap.
+
+## Central core
+
+At the center is the **Flagship Orb Core** — the single conversational/intellectual identity of Orb.
+
+It is not a replacement for the systems below. The systems supply memory, information, self-model, scenarios, language, interface, actions and world state around the flagship intelligence.
+
+```text
+                         ORB SYSTEMS SYSTEM
+                                 │
+                                 ▼
+                         FLAGSHIP ORB CORE
+                                 │
+      ┌──────────────────────────┼──────────────────────────┐
+      ▼                          ▼                          ▼
+  cognition                   memory                  self-model
+      │                          │                          │
+      └───────────────┬──────────┴──────────┬───────────────┘
+                      ▼                     ▼
+                   GUIDE                ORB MAX
+                      │
+                      ▼
+               ORB LANGUAGE
+                      │
+                      ▼
+             DYNAMIC INTERFACE
+                      │
+                      ▼
+                    ACTOR
+                      │
+                      ▼
+                  ACTIONS
+                      │
+                      ▼
+                 STATE DELTA
+                      │
+             MEMORY / GRAPH / WORLD
+                      │
+                      └──────────────► next cycle
+```
+
+# Master system map
 
 ## 1. Cognitive System
 
-Purpose: understand the Actor's discourse and current situation, preserve mode frame, detect goals/gaps, and decide what matters now.
+Purpose: understand Actor discourse and current situation.
 
-### Working now
-- flagship Orb conversation;
-- recent discourse context;
-- SYSTEM / YNY CHAT / CORP mode state;
-- Mode Cognition policies in YNY DEV;
+Owns:
+- discourse interpretation;
+- Actor intent / need / goal inference;
+- context formation;
+- SYSTEM / YNY CHAT / CORP cognition frame;
+- request interpretation before execution;
+- reasoning boundaries between diagnosis/orientation and actual work.
+
+Working/building:
+- flagship dialogue;
+- recent discourse;
+- Mode Cognition policies;
 - Mode Router v1 in DEV;
-- Guide Packet v0 in DEV;
-- Guide Focus v0 in DEV;
-- semantic sessions/check primitives in DEV.
+- SYSTEM interpret-first canon.
 
-### Building now
-- richer Guide focus;
-- broad ORB MAX horizon;
-- semantic session detection;
-- check/state-delta integration;
-- SYSTEM interpret-first / work-boundary behavior.
-
-### Planned
-- vector-guided retrieval across memory layers;
-- graph expansion;
-- agreement detector;
-- profile chronicle / summary-of-summaries;
-- richer actor-state inference with epistemic labels.
+Planned:
+- richer Actor-state inference;
+- epistemic labels: observed / confirmed / inferred;
+- semantic session detection.
 
 ## 2. Memory System
 
-Purpose: continuity, agreements, goals, projects, semantic history, retrieval and long-term state.
+Purpose: continuity of the Actor–Orb relationship and history.
 
-### Working now in production
-- `conversation_messages` raw discourse;
-- `session_summary_blocks` semantic compression;
+Owns:
+- raw conversation memory;
+- semantic summaries;
+- memory events;
+- durable profile memory;
+- agreements and preferences;
+- embeddings of memory layers;
+- summary-of-summaries / profile chronicle later.
+
+Working in production:
+- `conversation_messages`;
+- `session_summary_blocks`;
 - summary embeddings;
-- `memory_events` event capture;
-- immediate event → profile-memory bridge;
-- `profile_memory` durable memory;
-- profile-memory embeddings;
-- automatic memory workers / cron;
-- `knowledge_items` vectorized knowledge blocks.
+- `memory_events`;
+- event → working profile-memory bridge;
+- `profile_memory`;
+- memory embeddings;
+- automatic memory workers / cron.
 
-### Building now
-- Guide retrieval from vector memory instead of only recent rows;
-- agreement-state handling;
-- event/result/state-delta relationships.
+Planned:
+- active agreement model;
+- profile chronicle;
+- cross-session vector retrieval;
+- memory → state-delta relations.
 
-### Planned
-- Infoteka as knowledge-block factory;
-- personal and system knowledge scopes;
-- source metadata and provenance;
-- summary-of-summaries / profile chronicle;
-- graph memory and entity relations;
-- cross-session semantic retrieval.
+## 3. Information System
 
-## 3. Orb Language System
+Purpose: provide the information environment Orb can retrieve and reason over.
 
-Purpose: define the semantic vocabulary Orb can use to express meaning and action independent of Telegram/Web/Unity.
+This name intentionally replaces the former umbrella term `Knowledge / Infoteka System` so it does not conflict with the commercial/product module **INFOTEKA**.
 
-Examples:
-- TEXT
-- CARD
-- PROFILE
-- ENTITY
-- BUTTON
-- ACTION
-- OFFER
-- ACCEPT
-- CHECK
-- STATE_DELTA
-- WAY
-- TREE
-- MAP
-- AVATAR
-- SPACE
-- WORLD
-- PORTAL
+Owns:
+- system knowledge;
+- Wiki/entity information;
+- knowledge blocks;
+- imported documents/materials;
+- source provenance;
+- information normalization;
+- semantic chunking;
+- information embeddings;
+- personal/system information scopes;
+- retrieval-ready informational blocks.
+
+Current embryo:
+- `knowledge_items` + embeddings;
+- vector matching of system knowledge.
+
+Target pipeline:
+
+```text
+SOURCE
+↓
+INGEST
+↓
+CLEAN / NORMALIZE
+↓
+SEMANTIC BLOCKS
+↓
+METADATA / SOURCE / SCOPE
+↓
+EMBEDDINGS
+↓
+ENTITY / RELATION SEEDS
+↓
+INFORMATION RETRIEVAL
+```
+
+INFOTEKA becomes one module/tool that can feed this system, not the system name itself.
+
+## 4. Guide System
+
+Purpose: orchestrate what context, information, memory and system elements are relevant now.
+
+Owns:
+- Guide Packet;
+- Guide Focus;
+- scenario construction;
+- retrieval orchestration;
+- relevant memory selection;
+- relevant information selection;
+- ORB MAX exposure;
+- Actor access view;
+- session/check/state view;
+- selection of server blocks and AI slots for Dynamic Interface.
+
+Working in DEV:
+- Guide Packet v0;
+- Guide Focus v0.
+
+Building:
+- vector retrieval;
+- broad horizon reasoning;
+- scenario module composition.
+
+Planned:
+- graph expansion;
+- multi-stage retrieval/reranking;
+- scenario evaluation.
+
+## 5. Orb Language System
+
+Purpose: define the channel-independent semantic vocabulary Orb uses to express meaning and action.
 
 Core rule:
 
 > Stable meaning, living expression.
 
-The action is canonical; safe labels may adapt to language, tone and relationship.
+Vocabulary examples:
+- TEXT;
+- CARD;
+- PROFILE;
+- ENTITY;
+- BUTTON;
+- ACTION;
+- POTENTIAL_ACTION;
+- OFFER;
+- ACCEPT;
+- CHECK;
+- STATE_DELTA;
+- RESULT;
+- WAY;
+- TREE;
+- MAP;
+- AVATAR;
+- SPACE;
+- WORLD;
+- PORTAL.
 
-## 4. Dynamic Interface System
+Safe visible wording may adapt to Actor language, tone and relationship while semantic action stays stable.
 
-Purpose: compose Orb Language using server data and render it in the current channel.
+## 6. Dynamic Interface System
 
-Responsibilities:
+Purpose: compose and render Orb Language using server-side blocks and live state.
+
+Owns:
 - block registry;
 - server content retrieval;
-- templates;
-- images/video/text reuse;
-- cards and containers;
-- channel renderers;
-- action validators;
-- action executors;
-- AI slots when reasoning text is actually needed.
+- response templates;
+- image/video/text reuse;
+- cards/containers;
+- optional AI reasoning slots;
+- channel-independent UI AST;
+- render adapters for Telegram / Web / Unity / 3D / VR.
 
-Target principle:
+Core principle:
 
 > Do not spend flagship intelligence to reproduce data already stored on the server.
 
-## 5. Capability System / ORB MAX
+## 7. Orb Self-Awareness System
 
-Purpose: Orb's self-model of everything it can understand, reveal, potentially execute or orchestrate.
+Purpose: maintain Orb's operational self-model.
+
+Owns:
+- which Orb systems exist;
+- current health/status of systems;
+- what is implemented / planned / unavailable;
+- boundaries and limitations;
+- current runtime environment;
+- self-diagnostics;
+- ability to distinguish understanding from execution rights.
+
+This system answers:
+
+> What am I, what organs do I have, what is their current state, and what can I truthfully claim about myself?
+
+## 8. Capability & Mode System / ORB MAX
+
+Purpose: maintain the maximum capability horizon and execution profiles by mode.
 
 Formula:
 
@@ -123,38 +256,143 @@ ORB MAX
 → AVAILABLE EXECUTION STACK
 ```
 
-Understanding may see capabilities that are not currently executable.
+Understanding may see planned or locked capabilities even when execution is not available.
 
-Current ORB MAX already includes core, knowledge, creation, action, Neo-system and CORP capabilities.
-
-World-scale extension in DEV now includes:
+Includes current/future capability families such as:
+- WEB;
+- IMAGE;
+- VIDEO;
 - PROFILE_CREATE;
-- MODAL;
+- GEO;
+- CONNECT;
+- SMM_AUTOPILOT;
 - AVATAR;
-- SPACE;
-- SPACE_3D;
-- SPACE_VR;
+- SPACE / 3D / VR;
 - METAVERSE;
 - WORLD_BUILDER;
 - GAME_BUILDER;
 - EXPERIENCE_BUILDER;
-- SYSTEM_BUILDER.
+- SYSTEM_BUILDER;
+- MULTI_AGENT_ORCHESTRATION.
 
-This allows SYSTEM to show a broad future horizon without pretending the capability is already executable.
+## 9. Action & Execution System
 
-## 6. Entity / Relation / Graph System
+Purpose: turn Actor-authorized semantic actions into safe executable operations.
 
-Purpose: represent what exists in Neo World and how objects relate.
+Owns:
+- action identity;
+- action validation;
+- accept/consent rules;
+- executor dispatch;
+- rollback/retry where possible;
+- result capture;
+- action logs;
+- production of evidence for State Delta.
 
-Target objects:
+Examples:
+- create profile;
+- create entity;
+- publish;
+- switch mode;
+- activate capability;
+- connect account;
+- send message;
+- create world object.
+
+Core rule:
+
+> Acceptance is execution when the action, consequences and Actor intent are sufficiently clear.
+
+## 10. Integration System — External World → Orb
+
+Purpose: safely bring external-world data, signals and context **into Orb**.
+
+Direction:
+
+```text
+EXTERNAL WORLD
+→ INTEGRATION SYSTEM
+→ INFORMATION / MEMORY / GRAPH / GUIDE / ORB
+```
+
+Owns:
+- inbound adapters;
+- source ingestion;
+- webhooks/events;
+- files and documents;
+- external messages;
+- feeds;
+- external API responses;
+- normalization into Orb-readable structures;
+- provenance and source identity;
+- inbound permissions/privacy.
+
+Examples:
+- Telegram incoming message;
+- imported Instagram/YouTube content;
+- bank transaction event;
+- calendar event;
+- uploaded file;
+- external API payload;
+- Unity/IoT/world-state event.
+
+## 11. Connector System — Orb → External World
+
+Purpose: safely let Orb reach and act **outward into external systems**.
+
+Direction:
+
+```text
+ORB / ACTION SYSTEM
+→ CONNECTOR SYSTEM
+→ EXTERNAL WORLD
+```
+
+Owns:
+- connector registry;
+- provider adapters;
+- external authentication/tokens;
+- supported outbound capabilities;
+- external action execution;
+- service-specific constraints;
+- external result/error normalization;
+- connection health.
+
+Examples:
+- publish to Instagram / TikTok / YouTube;
+- send email/message;
+- create calendar event;
+- call external API;
+- booking;
+- payment provider action;
+- deploy/publish site;
+- control authorized external service.
+
+Integration and Connector Systems are related but intentionally separate because their trust, authorization and data-flow semantics differ.
+
+## 12. Entity / Relation / Graph System
+
+Purpose: represent what exists and how it is connected.
+
+Owns:
+- entities;
+- passports;
+- relations;
+- personal graph;
+- system graph;
+- graph projections;
+- relation provenance/confidence;
+- path/neighbor expansion.
+
+Target objects include:
 - Actor/profile;
 - project;
-- work/artifact;
+- artifact/work;
 - method;
 - service;
 - organization;
 - place;
-- content block;
+- information block;
 - site;
 - avatar;
 - world;
@@ -162,126 +400,101 @@ Target objects:
 - capability;
 - session/result/state delta.
 
-Planned graph roles:
-- structural relations;
-- entity-first SYSTEM retrieval;
-- path generation;
-- knowledge expansion;
-- personal/system graph projections.
+## 13. Gestalt / Session / State System
 
-## 7. Gestalt / Session / State System
+Purpose: model movement from state A to state B.
 
-Purpose: represent movement from state A to state B.
-
-Objects:
+Owns:
 - semantic session;
 - goal;
 - check;
 - result;
-- state delta;
 - evidence;
-- closure.
+- state delta;
+- closure;
+- River of Time / change history projection.
 
 Core rule:
 
 > A closed check means a verifiable state change, not a decorative checkbox.
 
-State changes may be produced by:
-- completed check;
-- transaction;
-- artifact creation;
-- entity creation;
-- activation;
-- publication;
-- connection;
-- external action.
+State changes may come from checks, transactions, artifacts, entities, activations, publications, connections and external actions.
 
-## 8. Action / Economy System
+## 14. Economy & Offer System
 
-Purpose: safely execute changes in Neo World and connected systems.
+Purpose: govern value, commercial offers and financial state.
 
-Includes:
-- offer;
-- accept;
-- transaction;
-- purchase;
-- activation;
-- payment;
-- connector action;
-- publishing;
-- external ASSIS action.
+Owns:
+- product/module catalog;
+- prices;
+- offers;
+- offer gating;
+- accept → transaction;
+- balances;
+- ownership/entitlements;
+- payment state;
+- transaction history;
+- fees/tax mechanics;
+- economic state deltas.
 
-Server owns truth about:
-- price;
-- balance;
-- ownership;
-- permissions;
-- dependencies;
-- irreversible consequences.
+Server is the source of truth for money and consequences.
 
-## 9. Mode System
+## 15. Multiverse / 3D World System
 
-### SYSTEM
-Understands discourse through the Neo World frame.
+Purpose: support embodied/spatial forms of Neo World.
 
-Function:
-- enter context;
-- understand Actor manifestation;
-- show broad horizon;
-- reveal possible Neo World path;
-- point to relevant capabilities;
-- avoid doing prolonged personal/production work for free.
+Owns/plans:
+- avatars;
+- 3D spaces;
+- VR spaces;
+- metaverses;
+- portals;
+- world objects;
+- games;
+- experiences;
+- simulations;
+- Actor consultation/presence inside worlds;
+- world/system creation.
 
-### YNY CHAT
-Works directly with content, thought, learning, creativity and personal goals.
+This is both an execution surface and a major ORB MAX horizon.
 
-### CORP
-Turns goals into orchestrated processes, parallel workers and production systems.
+## 16. Infrastructure System
 
-Canonical shorthand:
+Purpose: provide the runtime foundation all Orb systems depend on.
 
-```text
-SYSTEM = context + orientation + horizon
-YNY CHAT = content work
-CORP = processes / production
-```
+Owns:
+- PostgreSQL/Supabase;
+- vector storage/indexes;
+- file/object storage;
+- Edge Functions/APIs;
+- queues/background jobs;
+- cron;
+- secrets/Vault;
+- auth/security primitives;
+- monitoring/logs;
+- deployment/versioning;
+- GitHub/CI/CD;
+- hosting/CDN/network infrastructure.
 
-## 10. Guide position in the organism
-
-Guide is not the flagship and not the interface renderer.
-
-Guide:
-- gathers context;
-- retrieves relevant memory;
-- exposes ORB MAX;
-- sees access and rights;
-- sees sessions/checks/state deltas;
-- proposes a scenario/focus;
-- supplies relevant server elements.
-
-Then:
+# Directional map of the world boundary
 
 ```text
-GUIDE PACKET
-↓
-FLAGSHIP UNDERSTANDING
-↓
-GUIDE / SCENARIO SELECTION
-↓
-DYNAMIC INTERFACE COMPOSER
-↓
-SERVER BLOCKS + OPTIONAL AI SLOTS
-↓
-ORB LANGUAGE
-↓
-CHANNEL RENDERER
-↓
-ACTOR ACTION
-↓
-STATE DELTA
+                      EXTERNAL WORLD
+                      ▲            │
+                      │            ▼
+              CONNECTOR          INTEGRATION
+                SYSTEM             SYSTEM
+                      ▲            │
+                      │            ▼
+                    ACTION        GUIDE
+                      ▲            │
+                      └────── ORB ─┘
 ```
 
-## 11. Development status legend
+- **Integration System** makes the external world readable by Orb.
+- **Connector System** makes Orb capable of acting in the external world.
+
+# Development status legend
 
 - `working_prod` — live and used in production;
 - `working_dev` — implemented/tested in YNY DEV;
@@ -289,17 +502,20 @@ STATE DELTA
 - `planned` — architecture established but not yet implemented;
 - `concept` — useful horizon, not yet sufficiently specified.
 
-## 12. Skeleton rule
+# Skeleton rule
 
 Before adding a feature, determine which organ owns it.
 
 Examples:
-- remembering a preference → Memory System;
+- remembering an agreement → Memory System;
+- importing a PDF → Integration System → Information System;
+- retrieving a relevant Wiki block → Information System / Guide;
 - understanding why it matters now → Cognitive System / Guide;
-- expressing a possible action → Orb Language;
-- rendering the button/card → Dynamic Interface System;
-- checking whether the action exists → ORB MAX;
-- validating price/access → Action/Economy System;
-- executing it → executor;
+- knowing METAVERSE exists → Self-Awareness + ORB MAX;
+- expressing `OPEN_WORLD` → Orb Language;
+- rendering the world card → Dynamic Interface System;
+- validating an action → Action System;
+- posting to Instagram → Connector System;
+- validating price/access → Economy System;
 - recording what changed → State System;
-- linking the result to Actor/project/world → Entity Graph.
+- linking the result to Actor/project/world → Entity/Graph System.
