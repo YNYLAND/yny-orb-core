@@ -103,47 +103,59 @@ Planned:
 
 ## 3. Information System
 
-Purpose: provide the information environment Orb can retrieve and reason over.
+Purpose: maintain the informational field Orb can use as knowledge and source material.
 
-This name intentionally replaces the former umbrella term `Knowledge / Infoteka System` so it does not conflict with the commercial/product module **INFOTEKA**.
+This is not the Memory System and not the product/module **INFOTEKA**.
+
+It answers:
+
+> What information can Orb know, retrieve, verify, compare and reason over?
 
 Owns:
-- system knowledge;
-- Wiki/entity information;
-- knowledge blocks;
-- imported documents/materials;
-- source provenance;
-- information normalization;
+- `knowledge_items` and future richer knowledge blocks;
+- Wiki / canonical system information;
+- trusted sources of truth;
+- documents and structured reference materials;
+- system and personal informational scopes;
+- automatic information-memory builders;
 - semantic chunking;
-- information embeddings;
-- personal/system information scopes;
+- embeddings and vector indexes;
+- provenance / source metadata;
+- freshness / version state;
 - retrieval-ready informational blocks.
+
+Typical sources may include:
+- Neo World canonical data;
+- Wiki;
+- imported documents;
+- connected external sources accessed through Connector System;
+- actor-authorized archives;
+- feeds/news/data streams;
+- information produced by modules such as INFOTEKA.
 
 Current embryo:
 - `knowledge_items` + embeddings;
 - vector matching of system knowledge.
 
-Target pipeline:
+Target information pipeline:
 
 ```text
-SOURCE
-↓
-INGEST
+SOURCE MATERIAL
 ↓
 CLEAN / NORMALIZE
 ↓
 SEMANTIC BLOCKS
 ↓
-METADATA / SOURCE / SCOPE
+METADATA / SOURCE / SCOPE / VERSION
 ↓
 EMBEDDINGS
 ↓
-ENTITY / RELATION SEEDS
+RETRIEVAL
 ↓
-INFORMATION RETRIEVAL
+GUIDE / FLAGSHIP ORB
 ```
 
-INFOTEKA becomes one module/tool that can feed this system, not the system name itself.
+Entity/relation candidates may be emitted from information blocks, but becoming part of the unified Neo World graph requires **Integration System**.
 
 ## 4. Guide System
 
@@ -303,72 +315,124 @@ Core rule:
 
 > Acceptance is execution when the action, consequences and Actor intent are sufficiently clear.
 
-## 10. Integration System — External World → Orb
+## 10. Integration System — Into the Unified Neo World Field
 
-Purpose: safely bring external-world data, signals and context **into Orb**.
+Purpose: decide whether something external, local or newly created may become a **recognized part of the unified Orb / Neo World field**.
 
-Direction:
+Integration is not transport and not “reading the outside world”. It is a one-way admission/manifestation process.
 
-```text
-EXTERNAL WORLD
-→ INTEGRATION SYSTEM
-→ INFORMATION / MEMORY / GRAPH / GUIDE / ORB
-```
-
-Owns:
-- inbound adapters;
-- source ingestion;
-- webhooks/events;
-- files and documents;
-- external messages;
-- feeds;
-- external API responses;
-- normalization into Orb-readable structures;
-- provenance and source identity;
-- inbound permissions/privacy.
-
-Examples:
-- Telegram incoming message;
-- imported Instagram/YouTube content;
-- bank transaction event;
-- calendar event;
-- uploaded file;
-- external API payload;
-- Unity/IoT/world-state event.
-
-## 11. Connector System — Orb → External World
-
-Purpose: safely let Orb reach and act **outward into external systems**.
-
-Direction:
+Canonical direction:
 
 ```text
-ORB / ACTION SYSTEM
-→ CONNECTOR SYSTEM
-→ EXTERNAL WORLD
+CANDIDATE OBJECT / DATA / ACTOR / PROJECT / ARTIFACT / KNOWLEDGE
+↓
+INTEGRATION RULES
+↓
+VALIDATION / NORMALIZATION / RIGHTS / NEO WORLD STANDARDS
+↓
+ACCEPTED OR REJECTED
+↓
+IF ACCEPTED:
+ENTITY / PASSPORT / CONTENT / RELATIONS / GRAPH / INDEX / VISIBILITY / ECONOMIC RIGHTS
+↓
+BECOMES PART OF THE UNIFIED FIELD
 ```
+
+This system answers:
+
+> Can this become part of Neo World, under what rules, in what canonical form, with what relations, visibility and rights?
+
+Owns/plans:
+- integration rules and standards;
+- PLUS / MINUS integration lists in the first stage;
+- eligibility / rejection reasons;
+- canonical type mapping;
+- normalization into Neo World forms;
+- entity/passport creation or update;
+- integration into unified graph;
+- relation creation;
+- visibility/discoverability state;
+- provenance / authorship;
+- rights / ownership / attribution;
+- content integration;
+- monetization eligibility for later consumption by other Actors;
+- integration audit trail;
+- integration state delta.
+
+Examples of things that may pass Integration:
+- person / profile / actor representation;
+- project;
+- artifact;
+- book;
+- method;
+- service;
+- event;
+- news item;
+- knowledge block;
+- site;
+- organization;
+- place;
+- token/NFT/world object;
+- external data imported through Connector System.
+
+Important distinction:
+
+> Connector can fetch or send something without integrating it.
+>
+> Integration begins only when the system decides that the object should become part of the shared Neo World field.
+
+This is the system behind the SYSTEM-mode **INTEGRATION** surface next to GUIDE and WIKI.
+
+## 11. Connector System — Orb ↔ External World
+
+Purpose: provide the two-way technical and authorization bridge between Orb and external systems.
+
+Canonical direction:
+
+```text
+ORB ⇄ CONNECTOR SYSTEM ⇄ EXTERNAL WORLD
+```
+
+Connector System does not itself decide that imported information becomes part of the unified Neo World graph. It only provides controlled access and transport.
 
 Owns:
 - connector registry;
 - provider adapters;
 - external authentication/tokens;
-- supported outbound capabilities;
-- external action execution;
-- service-specific constraints;
+- inbound reads/subscriptions;
+- outbound actions;
+- service-specific scopes and permissions;
+- external event/webhook handling;
 - external result/error normalization;
-- connection health.
+- connection health;
+- consent and revocation;
+- channel identity mapping.
 
 Examples:
-- publish to Instagram / TikTok / YouTube;
-- send email/message;
-- create calendar event;
-- call external API;
-- booking;
-- payment provider action;
-- deploy/publish site;
-- control authorized external service.
+- Orb plugin in ChatGPT;
+- importing authorized ChatGPT history into profile memory;
+- connecting Telegram account for reading authorized information;
+- connecting TikTok / Instagram / YouTube / Facebook;
+- publishing content outward;
+- reading external feeds;
+- email / calendar / messenger integrations;
+- bank/payment provider connection;
+- Cloudflare / GitHub / Supabase / external API connections;
+- Unity / external application links.
 
-Integration and Connector Systems are related but intentionally separate because their trust, authorization and data-flow semantics differ.
+Two-way rule:
+
+```text
+READ / RECEIVE  ← Connector → external source
+ACT / SEND      Connector → external destination
+```
+
+A Connector may feed:
+- Cognitive System;
+- Information System;
+- Memory System;
+- Action System;
+- Integration System.
 
 ## 12. Entity / Relation / Graph System
 
@@ -400,6 +464,8 @@ Target objects include:
 - capability;
 - session/result/state delta.
 
+Integration System is one of the main gates through which new objects and relations enter the shared graph.
+
 ## 13. Gestalt / Session / State System
 
 Purpose: model movement from state A to state B.
@@ -418,7 +484,7 @@ Core rule:
 
 > A closed check means a verifiable state change, not a decorative checkbox.
 
-State changes may come from checks, transactions, artifacts, entities, activations, publications, connections and external actions.
+State changes may come from checks, transactions, artifacts, entities, activations, publications, connections, integrations and external actions.
 
 ## 14. Economy & Offer System
 
@@ -438,6 +504,8 @@ Owns:
 - economic state deltas.
 
 Server is the source of truth for money and consequences.
+
+Integration System may later determine whether an integrated object/content block is eligible for monetized reuse inside Neo World.
 
 ## 15. Multiverse / 3D World System
 
@@ -476,23 +544,38 @@ Owns:
 - GitHub/CI/CD;
 - hosting/CDN/network infrastructure.
 
-# Directional map of the world boundary
+# Boundary map
 
 ```text
-                      EXTERNAL WORLD
-                      ▲            │
-                      │            ▼
-              CONNECTOR          INTEGRATION
-                SYSTEM             SYSTEM
-                      ▲            │
-                      │            ▼
-                    ACTION        GUIDE
-                      ▲            │
-                      └────── ORB ─┘
+                         EXTERNAL WORLD
+                               ▲  │
+                               │  ▼
+                    ┌────────────────────┐
+                    │  CONNECTOR SYSTEM  │
+                    │     two-way        │
+                    └─────────┬──────────┘
+                              │
+                     reads / sends / acts
+                              │
+              ┌───────────────┴────────────────┐
+              ▼                                ▼
+       ORB INTERNAL SYSTEMS              INTEGRATION CANDIDATE
+                                               │
+                                               ▼
+                                    ┌────────────────────┐
+                                    │ INTEGRATION SYSTEM │
+                                    │     one-way gate   │
+                                    └─────────┬──────────┘
+                                              │ accepted
+                                              ▼
+                                   UNIFIED NEO WORLD FIELD
+                                   GRAPH / MEMORY / CONTENT
+                                   ENTITIES / RIGHTS / INDEX
 ```
 
-- **Integration System** makes the external world readable by Orb.
-- **Connector System** makes Orb capable of acting in the external world.
+- **Connector System** connects Orb and external systems in both directions.
+- **Integration System** decides whether something crosses the boundary into the unified Neo World field and becomes part of the whole.
+- **Information System** stores and retrieves information Orb can use, whether or not every informational item has been integrated as a shared Neo World entity.
 
 # Development status legend
 
@@ -508,8 +591,11 @@ Before adding a feature, determine which organ owns it.
 
 Examples:
 - remembering an agreement → Memory System;
-- importing a PDF → Integration System → Information System;
-- retrieving a relevant Wiki block → Information System / Guide;
+- connecting a Telegram account → Connector System;
+- reading authorized Telegram content → Connector System → Information/Memory;
+- deciding that one imported item becomes part of Neo World → Integration System;
+- creating its passport and links → Integration System + Entity/Graph System;
+- retrieving a relevant Wiki/knowledge block → Information System / Guide;
 - understanding why it matters now → Cognitive System / Guide;
 - knowing METAVERSE exists → Self-Awareness + ORB MAX;
 - expressing `OPEN_WORLD` → Orb Language;
