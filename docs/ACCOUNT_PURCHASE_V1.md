@@ -1,125 +1,132 @@
-# PROFILE → ACCOUNT purchase v1
+# PROFILE → ACCOUNT / shell + modules
 
 Status: **YNY DEV**
 
 ## Canon
 
 - Actor/payer: authenticated `PROFILE`.
-- Created entity: `neo.profile.acaunt` (`ACCOUNT`).
+- Entity: `neo.profile.acaunt` (`ACCOUNT`).
 - System price: `1.00 YNY` per Account.
-- `ACCOUNT` is a repeatable creatable entity, not a one-time module entitlement.
-- Every accepted purchase creates exactly one new Account.
+- `ACCOUNT` is repeatable: every accepted purchase creates one new Account shell.
 - A Profile may own multiple Accounts.
-- New Accounts are created as `BLANK` and appear immediately in the Profile Account list.
-- An Account can later be configured into a form such as `GROUP`, `PAGE`, `ASSYS`, `WALLET`, or `CABINET`.
-- This is a **system purchase**, not an inter-profile transaction.
-- No Neo World transaction tax is charged on this purchase.
-- The transaction contour is reserved for transfers / transactions between Profiles.
-- The Account stores its own purchase receipt fields (`purchase_id`, `purchase_price_yny`, `purchase_kind=system_purchase`) instead of creating an inter-profile transaction record.
+- System purchase is not an inter-profile transaction and has no Neo World transaction tax.
+- Each Account keeps its own system-purchase receipt (`purchase_id`, `purchase_price_yny`, `purchase_kind=system_purchase`).
 
-## Backend
+## Account is not a form
 
-Edge Function: `orb-account`
+An Account never turns into GROUP, PAGE, ASSYS, WALLET or CABINET.
 
-Supported actions today:
+The Account is a stable shell/container. Functional capabilities are installed **inside the same Account as modules** and may coexist.
 
-### `quote`
+Example:
 
-Returns the current Account offer for the authenticated Profile plus the current owned Account list:
+`ACCOUNT`
+- `PAGE`
+- `GROUP`
+- other modules as needed
 
-- `price_yny`
-- `charge_yny`
-- `balance_yny`
-- `can_purchase`
-- `missing_yny`
-- `purchase_kind=system_purchase`
-- `repeatable=true`
-- `account_count`
-- `accounts[]`
+Unused modules stay uninstalled so the Account workspace is not cluttered.
 
-Each item in `accounts[]` includes the Account id, display name, form, status, purchase receipt and timestamps.
+## Purchase → setup
 
-### `create`
+Purchase creates a paid empty Account slot immediately in the Profile Account list:
 
-Atomically:
+- `setup_state=blank`
+- no required module installed
+- no Account form
+- own `purchase_id`
+- own list position
 
-1. locks the active Profile;
-2. reads the live YNY MENU price;
-3. locks Profile balance;
-4. checks the required `1.00 YNY`;
-5. deducts `1.00 YNY` from the Profile balance;
-6. creates one new Account with `account_form=blank`;
-7. stores its system-purchase receipt (`purchase_id`, `purchase_price_yny=1.00`, `purchase_kind=system_purchase`).
+The user then fills the shell. In v1 the minimum required field is the Account name.
 
-No Neo World tax is added and no row is created in the inter-profile transaction ledger for this system purchase.
+After naming:
 
-A v2 purchase RPC also supports `purchase_request_id` idempotency for UI retries/double-submit protection.
+- `setup_state=ready`
+- optional avatar may be attached
+- modules can be installed into the Account
 
-## Authentication
+## Profile Account list
 
-The browser never sends an arbitrary `profile_id` for purchase.
+For now the Profile Account panel is deliberately simple:
 
-`orb-account` resolves the Profile from one of these verified identities:
+- avatar
+- Account name
+- blank shell may show as an unfinished item
+- manual ordering is supported through `list_position`
 
-- existing Orb Session `session_token` (compatible with current Orb Web / YNY MENU handoff flow);
-- signed Telegram init data;
-- Supabase Auth bearer token.
+Up to roughly 10 Accounts this remains a plain ordered list. Search/catalog/grouping is a later UI layer, not required for the first version.
 
-## PROFILE button contract
+## Account module model
 
-Add `ACCOUNT` to the authenticated Profile bar.
+Current module catalog in DEV:
 
-### Guest
+- `PAGE`
+- `GROUP`
+- `ASSYS`
+- `WALLET`
+- `CABINET`
 
-Click `ACCOUNT` → use the existing Profile login flow. No offer can be accepted as Guest.
+Installing one module does not replace another.
 
-### Authenticated Profile
+### PAGE
 
-Click `ACCOUNT` → `quote` → open the Account panel.
+PAGE is installed into the Account and becomes a public/shareable surface. Its public address/domain and link model are the next layer.
 
-The panel contains:
+### GROUP
 
-- the list of already owned Accounts;
-- a `+ ACCOUNT` / `СОЗДАТЬ ACCOUNT` action;
-- the YNY MENU offer: `ACCOUNT — 1.00 YNY`;
-- current Profile balance.
+GROUP is a bundle/ready unpacking installed inside the Account. The first DEV manifest unpacks:
 
-Accept → `create`.
+- `TOPICS`
+- `ROOMS`
+- `CHATS`
+- `FEED`
+- `ORB`
 
-### Insufficient balance
+These belong to the Group package inside that Account; the Account itself remains unchanged.
 
-Do not create Account. Show the existing balance/top-up action (`ПОПОЛНИТЬ БАЛАНС`).
+Future Group behavior includes profiles/membership, voice rooms, streams/live participation and the Account Orb carrying community knowledge.
 
-### Success
+## Public onboarding target
 
-- deduct exactly `1.00 YNY`;
-- create one new `BLANK` Account;
-- append it to the Account list immediately;
-- update visible Profile balance from `balance_yny` returned by the server;
-- keep the purchase action available for the next Account.
+Target behavior for a public Account/PAGE link:
 
-## Account forms
+1. visitor opens a shared Account page;
+2. if the visitor has no platform Profile, a Profile is created/onboarded;
+3. when that Account has an active GROUP module and the link is configured for joining, the Profile is automatically added to that Group;
+4. the public PAGE can expose the project/community map and links into its worlds.
 
-The Account entity is purchased first and receives its functional form later.
+This onboarding contract is intentionally documented now but membership/link implementation is a later vertical slice.
 
-Current canonical forms:
+## Backend in YNY DEV
 
-- `BLANK` — empty Account shell;
-- `GROUP` — community/group Account;
-- `PAGE`;
-- `ASSYS`;
-- `WALLET`;
-- `CABINET`.
+Core RPCs:
 
-The immediate product target after Account purchasing/listing is the first `GROUP` Account for a community.
+- `get_profile_account_quote_v1(profile)` — Account offer + ordered Account list
+- `purchase_profile_account_repeatable_v1(profile, ..., request_id)` — buy one empty Account shell
+- `configure_profile_account_v1(profile, account, name, avatar)` — finish minimum setup
+- `get_profile_accounts_v1(profile)` — ordered simple list
+- `reorder_profile_account_v1(profile, account, position)` — manual ordering
+- `install_account_module_v1(profile, account, module)` — install/unpack a module
+- `get_account_workspace_v1(profile, account)` — Account + installed modules/components
 
-## Acceptance test passed in YNY DEV
+Tables:
 
-A test Profile was left with three distinct Accounts:
+- `accounts`
+- `account_module_catalog`
+- `account_modules`
+- `account_module_components`
 
-- all three belong to the same Profile;
-- all three have separate `purchase_id` values;
-- all three start as `account_form=blank`;
-- each new Account costs exactly `1.00 YNY`;
-- the Account offer remains repeatable after purchase;
-- no inter-profile transaction-ledger row is created by Account purchases.
+The former `account_form` field has been removed from DEV because it encoded the wrong model.
+
+## Acceptance test
+
+Validated in YNY DEV:
+
+1. Profile buys a new Account for exactly `1.00 YNY`.
+2. New Account appears as `setup_state=blank`.
+3. Account is named `YNY Community` and becomes `ready`.
+4. `PAGE` is installed into that Account.
+5. `GROUP` is installed into the same Account.
+6. GROUP unpacks `TOPICS`, `ROOMS`, `CHATS`, `FEED`, `ORB`.
+7. PAGE and GROUP coexist in the same Account workspace.
+8. No inter-profile transaction-ledger row is created by the Account purchase.
