@@ -14,6 +14,7 @@ type AccountBody = {
   action?: unknown;
   display_name?: unknown;
   telegram_init_data?: unknown;
+  session_token?: unknown;
 };
 
 type VerifiedIdentity = {
@@ -52,6 +53,11 @@ function timingSafeEqualHex(expected: string, actual: string): boolean {
     difference |= expected.charCodeAt(index) ^ actual.charCodeAt(index);
   }
   return difference === 0;
+}
+
+async function sha256Hex(value: string): Promise<string> {
+  const digest = await crypto.subtle.digest("SHA-256", encoder.encode(value));
+  return bytesToHex(new Uint8Array(digest));
 }
 
 async function hmacSha256(key: Uint8Array, message: string): Promise<Uint8Array> {
@@ -125,6 +131,35 @@ async function verifySupabaseUser(
   return { sourceType: "supabase_auth", externalUserId: data.user.id };
 }
 
+async function verifyOrbSessionToken(
+  rawToken: string,
+  adminClient: ReturnType<typeof createClient>,
+): Promise<string> {
+  const token = rawToken.trim();
+  if (!token) throw new Error("orb_session_invalid");
+
+  const tokenHash = await sha256Hex(token);
+  const { data, error } = await adminClient
+    .from("orb_sessions")
+    .select("profile_id,expires_at,revoked_at")
+    .eq("token_hash", tokenHash)
+    .maybeSingle();
+
+  if (error) {
+    console.error("orb session lookup failed", error.code);
+    throw new Error("orb_session_unavailable");
+  }
+  if (!data?.profile_id) throw new Error("orb_session_invalid");
+  if (data.revoked_at) throw new Error("orb_session_revoked");
+
+  const expiresAt = new Date(String(data.expires_at ?? "")).getTime();
+  if (!Number.isFinite(expiresAt) || expiresAt <= Date.now()) {
+    throw new Error("orb_session_expired");
+  }
+
+  return String(data.profile_id);
+}
+
 Deno.serve(async (request: Request) => {
   if (request.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (request.method !== "POST") return json(405, { error: "method_not_allowed" });
@@ -144,20 +179,29 @@ Deno.serve(async (request: Request) => {
   const action = typeof body.action === "string" ? body.action.trim().toLowerCase() : "quote";
   if (action !== "quote" && action !== "create") return json(422, { error: "unsupported_action" });
 
-  let identity: VerifiedIdentity;
+  const adminClient = createClient(supabaseUrl, serviceRoleKey, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
+
+  let profileId: string | null = null;
+  let identity: VerifiedIdentity | null = null;
+
   try {
     const authorization = request.headers.get("Authorization") ?? "";
     if (/^Bearer\s+\S+/i.test(authorization)) {
       identity = await verifySupabaseUser(authorization, supabaseUrl, anonKey);
-    } else if (typeof body.telegram_init_data === "string") {
+    } else if (typeof body.telegram_init_data === "string" && body.telegram_init_data.trim()) {
       const botToken = Deno.env.get("TELEGRAM_BOT_TOKEN");
       if (!botToken) return json(503, { error: "telegram_account_not_configured" });
       identity = await verifyTelegramInitData(body.telegram_init_data, botToken);
+    } else if (typeof body.session_token === "string" && body.session_token.trim()) {
+      profileId = await verifyOrbSessionToken(body.session_token, adminClient);
     } else {
       return json(401, { error: "verified_identity_required" });
     }
   } catch (error) {
     const code = error instanceof Error ? error.message : "identity_verification_failed";
+    if (code === "orb_session_unavailable") return json(503, { error: code });
     const publicCodes = new Set([
       "authorization_invalid",
       "telegram_hash_missing",
@@ -165,6 +209,9 @@ Deno.serve(async (request: Request) => {
       "telegram_init_data_expired",
       "telegram_user_missing",
       "telegram_user_invalid",
+      "orb_session_invalid",
+      "orb_session_revoked",
+      "orb_session_expired",
     ]);
     return json(401, { error: publicCodes.has(code) ? code : "identity_verification_failed" });
   }
@@ -179,27 +226,27 @@ Deno.serve(async (request: Request) => {
     }
   }
 
-  const adminClient = createClient(supabaseUrl, serviceRoleKey, {
-    auth: { autoRefreshToken: false, persistSession: false },
-  });
+  if (!profileId && identity) {
+    const { data: link, error: linkError } = await adminClient
+      .from("profile_links")
+      .select("profile_id")
+      .eq("source_type", identity.sourceType)
+      .eq("external_user_id", identity.externalUserId)
+      .maybeSingle();
 
-  const { data: link, error: linkError } = await adminClient
-    .from("profile_links")
-    .select("profile_id")
-    .eq("source_type", identity.sourceType)
-    .eq("external_user_id", identity.externalUserId)
-    .maybeSingle();
-
-  if (linkError) {
-    console.error("profile link lookup failed", linkError.code);
-    return json(500, { error: "profile_lookup_failed" });
+    if (linkError) {
+      console.error("profile link lookup failed", linkError.code);
+      return json(500, { error: "profile_lookup_failed" });
+    }
+    profileId = link?.profile_id ? String(link.profile_id) : null;
   }
-  if (!link?.profile_id) return json(404, { error: "profile_not_found", next: "create_profile" });
+
+  if (!profileId) return json(404, { error: "profile_not_found", next: "create_profile" });
 
   const rpcName = action === "quote" ? "get_profile_account_quote_v1" : "purchase_profile_account_v1";
   const params = action === "quote"
-    ? { p_profile_id: link.profile_id }
-    : { p_profile_id: link.profile_id, p_display_name: displayName };
+    ? { p_profile_id: profileId }
+    : { p_profile_id: profileId, p_display_name: displayName };
 
   const { data, error } = await adminClient.rpc(rpcName, params);
   if (error || !data || typeof data !== "object") {
