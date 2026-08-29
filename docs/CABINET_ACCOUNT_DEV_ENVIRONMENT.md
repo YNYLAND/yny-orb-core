@@ -1,15 +1,15 @@
 # Cabinet Account DEV Environment
 
-This branch is reserved for the isolated PROFILE → ACCOUNT development slice.
+The accessible GitHub repositories and branches are development/test space only. They are not the live production Cabinet source.
 
 ## Environment boundaries
 
-- Git branch: `cabinet-account-dev`
-- Supabase: `YNY DEV` only
+- GitHub: DEV/test by default.
+- Current feature branch: `cabinet-account-dev` for convenience only.
+- Supabase: `YNY DEV` only for Account development data and test balances.
 - Production Supabase must not be modified by Account DEV operations.
 - Cloudflare deployment, when added, must use a separate DEV Pages/Worker project and DEV hostname.
-- Production Cabinet (`cabinet.yny.land`) is not a deployment target for this branch.
-- Promotion to production requires explicit acceptance after DEV testing.
+- The live production Cabinet is a separate published environment and is not touched until explicit acceptance.
 
 ## Purchase rule
 
